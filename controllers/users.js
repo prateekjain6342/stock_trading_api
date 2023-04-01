@@ -70,7 +70,7 @@ const login = async (req, res) => {
 
         // Generate Password
         const access_token = jwt.sign({email: existingUser.email, id: existingUser._id}, process.env.ACCESS_SECRET_KEY, {expiresIn: 60*10});
-        const refresh_token = jwt.sign({email: existingUser.email, id: existingUser._id}, process.env.REFERSH_SECRET_KEY, {expiresIn: 60*60});
+        const refresh_token = jwt.sign({email: existingUser.email, id: existingUser._id}, process.env.REFRESH_SECRET_KEY, {expiresIn: 60*60});
 
         res.status(200).json({
             status: true,
@@ -93,9 +93,9 @@ const refreshToken = (req, res) => {
     let { refresh_token } = req.body;
 
     try {
-        let user = jwt.verify(refresh_token, process.env.REFERSH_SECRET_KEY);
+        let user = jwt.verify(refresh_token, process.env.REFRESH_SECRET_KEY);
         const access_token = jwt.sign({email: user.email, id: user._id}, process.env.ACCESS_SECRET_KEY, {expiresIn: 60*10});
-        refresh_token = jwt.sign({email: user.email, id: user._id}, process.env.REFERSH_SECRET_KEY, {expiresIn: 60*60});
+        refresh_token = jwt.sign({email: user.email, id: user._id}, process.env.REFRESH_SECRET_KEY, {expiresIn: 60*60});
 
         res.status(200).json({
             status: true,
@@ -103,7 +103,7 @@ const refreshToken = (req, res) => {
             access_token: access_token,
             refresh_token: refresh_token
         });
-        
+
     } catch(error) {
         res.status(401).json({
             status: false,
@@ -112,4 +112,4 @@ const refreshToken = (req, res) => {
     }
 }
 
-module.exports = { signup, login };
+module.exports = { signup, login, refreshToken };
