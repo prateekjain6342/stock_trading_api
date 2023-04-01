@@ -24,7 +24,7 @@ const signup = async (req, res) => {
         })
 
         // Token Generation
-        const token = jwt.sign({email: result.email, id: result._id}, process.env.SECRET_KEY);
+        const token = jwt.sign({email: result.email, id: result._id}, process.env.SECRET_KEY, {expiresIn: 60*10});
         res.status(201).json({
             status: true,
             user_email: result.email,
@@ -66,7 +66,7 @@ const login = async (req, res) => {
         }
 
         // Generate Password
-        const token = jwt.sign({email: existingUser.email, id: existingUser._id}, process.env.SECRET_KEY);
+        const token = jwt.sign({email: existingUser.email, id: existingUser._id}, process.env.SECRET_KEY, {expiresIn: 60*10});
         res.status(200).json({
             status: true,
             user_email: existingUser.email,
