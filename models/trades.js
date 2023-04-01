@@ -32,10 +32,6 @@ const Trade = mongoose.Schema(
         price: {
             type: Number,
             required: true,
-        },
-        timestamp: {
-            type: Date,
-            required: true
         }
     }
 , {timestamps: true});

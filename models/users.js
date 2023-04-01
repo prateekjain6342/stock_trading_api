@@ -9,6 +9,9 @@ const User = mongoose.Schema(
         password: {
             type: String,
             required: true
+        },
+        id: {
+            type: Number
         }
     }
 , {timestamps: true});

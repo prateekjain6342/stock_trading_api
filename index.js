@@ -8,7 +8,7 @@ require('dotenv').config();
 
 app.use(express.json());
 app.use('/user', userRoutes);
-app.use('/trade', tradeRoutes);
+app.use('/trades', tradeRoutes);
 
 
 app.get('/health', (req, res) => {
