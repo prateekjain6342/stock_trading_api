@@ -27,7 +27,17 @@ const Trade = mongoose.Schema(
         },
         shares: {
             type: Number,
-            required: true
+            required: true,
+            validate: {
+                validator: (value) => {
+                    if (value >= 1 && value <= 100) {
+                        return true
+                    } else {
+                        return false
+                    }
+                },
+                message: props => `${props.value} is not between the expected range of [1, 100]`
+            }
         },
         price: {
             type: Number,
