@@ -24,11 +24,14 @@ const signup = async (req, res) => {
         })
 
         // Token Generation
-        const token = jwt.sign({email: result.email, id: result._id}, process.env.SECRET_KEY, {expiresIn: 60*10});
+        const access_token = jwt.sign({email: result.email, id: result._id}, process.env.ACCESS_SECRET_KEY, {expiresIn: 60*10});
+        const refresh_token = jwt.sign({email: result.email, id: result._id}, process.env.REFRESH_SECRET_KEY, {expiresIn: 60*60});
+
         res.status(201).json({
             status: true,
             user_email: result.email,
-            token: token
+            access_token: access_token,
+            refresh_token: refresh_token
         });
 
 
@@ -66,16 +69,43 @@ const login = async (req, res) => {
         }
 
         // Generate Password
-        const token = jwt.sign({email: existingUser.email, id: existingUser._id}, process.env.SECRET_KEY, {expiresIn: 60*10});
+        const access_token = jwt.sign({email: existingUser.email, id: existingUser._id}, process.env.ACCESS_SECRET_KEY, {expiresIn: 60*10});
+        const refresh_token = jwt.sign({email: existingUser.email, id: existingUser._id}, process.env.REFERSH_SECRET_KEY, {expiresIn: 60*60});
+
         res.status(200).json({
             status: true,
             user_email: existingUser.email,
-            token: token
+            access_token: access_token,
+            refresh_token: refresh_token
         });
 
     } catch(error) {
         console.log(error);
         res.status(500).json({
+            status: false,
+            message: error
+        })
+    }
+}
+
+const refreshToken = (req, res) => {
+
+    let { refresh_token } = req.body;
+
+    try {
+        let user = jwt.verify(refresh_token, process.env.REFERSH_SECRET_KEY);
+        const access_token = jwt.sign({email: user.email, id: user._id}, process.env.ACCESS_SECRET_KEY, {expiresIn: 60*10});
+        refresh_token = jwt.sign({email: user.email, id: user._id}, process.env.REFERSH_SECRET_KEY, {expiresIn: 60*60});
+
+        res.status(200).json({
+            status: true,
+            user_email: user.email,
+            access_token: access_token,
+            refresh_token: refresh_token
+        });
+        
+    } catch(error) {
+        res.status(401).json({
             status: false,
             message: error
         })
