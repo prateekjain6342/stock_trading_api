@@ -31,4 +31,55 @@ const createTrade = async (req, res) => {
     }
 }
 
-module.exports = { createTrade };
+const getAllTrades = async (req, res) => {
+    const { type, user_id } = req.query;
+
+    let query = {}
+    if (type || user_id) {
+        if (type && user_id) {
+            query.type = type
+            query.user_id = user_id
+        }
+
+        if (type && !user_id) {
+            query.type = type
+        }
+
+        if (!type && user_id) {
+            query.user_id = user_id
+        }
+    }
+
+    const trades = await Trade.find(query);
+    res.status(200).json({
+        status: true,
+        body: trades
+    })
+}
+
+const getTradeById = async (req, res) => {
+    const tradeId = req.params.id;
+    const trade = await Trade.findById(tradeId)
+    
+    if (trade) {
+        res.status(200).json({
+            status: true,
+            body: trade
+        })
+    } else {
+        res.status(404).json({
+            status: false,
+            message: 'Trade Not Found'
+        })
+    }
+    
+}
+
+const notAllowed = async (req, res) => {
+    res.status(405).json({
+        status: false,
+        message: 'Method Not Allowed'
+    })
+}
+
+module.exports = { createTrade, getAllTrades, getTradeById, notAllowed };
