@@ -5,6 +5,14 @@ const jwt = require('jsonwebtoken');
 const signup = async (req, res) => {
     const { email, password } = req.body;
     try {
+        // Fields Validation
+        const doc = {
+            email: email,
+            password: password
+        }
+
+        await User.validate(doc);
+
          // Check for existing user
         const existingUser = await User.findOne({ email: email });
         if (existingUser) {

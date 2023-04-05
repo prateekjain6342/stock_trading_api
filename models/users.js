@@ -4,14 +4,18 @@ const User = mongoose.Schema(
     {
         email: {
             type: String,
-            required: true
+            required: true,
+            validate: {
+                validator: (value) => {
+                    const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+                    return emailRegex.test(value);
+                },
+                message: props => `${props.value} is not a valid email!`
+            }
         },
         password: {
             type: String,
             required: true
-        },
-        id: {
-            type: Number
         }
     }
 , {timestamps: true});
