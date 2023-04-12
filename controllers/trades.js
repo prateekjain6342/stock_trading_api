@@ -2,7 +2,7 @@ const Trade = require('../models/trades');
 
 const createTrade = async (req, res) => {
     const { type, symbol, shares, price } = req.body;
-
+    // Add validation for type of data points
     try {
         const doc = {
             type: type,
