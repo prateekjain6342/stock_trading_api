@@ -16,7 +16,8 @@ const signup = async (req, res) => {
          // Check for existing user
         const existingUser = await User.findOne({ email: email });
         if (existingUser) {
-            return res.status(400).json({
+            res.status(400)
+            return res.json({
                 status: false,
                 message: 'User already exists'
             })
@@ -34,7 +35,8 @@ const signup = async (req, res) => {
         const access_token = jwt.sign({email: result.email, id: result._id}, process.env.ACCESS_SECRET_KEY, {expiresIn: 60*10});
         const refresh_token = jwt.sign({email: result.email, id: result._id}, process.env.REFRESH_SECRET_KEY, {expiresIn: 60*60});
 
-        res.status(201).json({
+        res.status(201)
+        res.json({
             status: true,
             user_email: result.email,
             access_token: access_token,
@@ -44,7 +46,8 @@ const signup = async (req, res) => {
 
     } catch(error) {
         console.log(error);
-        res.status(500).json({
+        res.status(500)
+        res.json({
             status: false,
             message: error
         })
@@ -60,7 +63,8 @@ const login = async (req, res) => {
          // Check for existing user
         const existingUser = await User.findOne({ email: email });
         if (!existingUser) {
-            return res.status(404).json({
+            res.status(404);
+            return res.json({
                 status: false,
                 message: 'User not found'
             })
@@ -69,7 +73,8 @@ const login = async (req, res) => {
         // Decrypt Password
         const matchPassword = await bcrypt.compare(password, existingUser.password);
         if (!matchPassword) {
-            return res.status(400).json({
+            res.status(400)
+            return res.json({
                 status: false,
                 message: 'Wrong email/password'
             })
@@ -79,7 +84,8 @@ const login = async (req, res) => {
         const access_token = jwt.sign({email: existingUser.email, id: existingUser._id}, process.env.ACCESS_SECRET_KEY, {expiresIn: 60*10});
         const refresh_token = jwt.sign({email: existingUser.email, id: existingUser._id}, process.env.REFRESH_SECRET_KEY, {expiresIn: 60*60});
 
-        res.status(200).json({
+        res.status(200);
+        res.json({
             status: true,
             user_email: existingUser.email,
             access_token: access_token,
@@ -88,7 +94,8 @@ const login = async (req, res) => {
 
     } catch(error) {
         console.log(error);
-        res.status(500).json({
+        res.status(500);
+        res.json({
             status: false,
             message: error
         })
@@ -104,7 +111,8 @@ const refreshToken = (req, res) => {
         const access_token = jwt.sign({email: user.email, id: user._id}, process.env.ACCESS_SECRET_KEY, {expiresIn: 60*10});
         refresh_token = jwt.sign({email: user.email, id: user._id}, process.env.REFRESH_SECRET_KEY, {expiresIn: 60*60});
 
-        res.status(200).json({
+        res.status(200);
+        res.json({
             status: true,
             user_email: user.email,
             access_token: access_token,
@@ -112,7 +120,8 @@ const refreshToken = (req, res) => {
         });
 
     } catch(error) {
-        res.status(401).json({
+        res.status(401);
+        res.json({
             status: false,
             message: error
         })
